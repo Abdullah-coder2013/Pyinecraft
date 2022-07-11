@@ -15,6 +15,7 @@ log = load_texture("assets/log.png")
 planks = load_texture("assets/planks.png")
 arm = load_texture("assets/alt.png")
 cobble = load_texture("assets/cobbler.png")
+ob = load_texture("assets/obsidian.png")
 punch_sound   = Audio('assets/break.ogg',loop = False, autoplay = False)
 bgm = Audio("assets/music.ogg", loop = True, autoplay = True)
 block_pick = 1
@@ -66,6 +67,7 @@ class Voxel(Button):
 				if block_pick == 5: voxel = Voxel(position = self.position + mouse.normal, texture = sand)
 				if block_pick == 6: voxel = Voxel(position = self.position + mouse.normal, texture = log)
 				if block_pick == 7: voxel = Voxel(position = self.position + mouse.normal, texture = planks)
+				if block_pick == 8: voxel = Voxel(position = self.position + mouse.normal, texture = ob)
 
 			if key == 'left mouse down':
 				punch_sound.play()

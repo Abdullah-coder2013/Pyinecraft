@@ -24,7 +24,7 @@ block_pick = 1
 window.fps_counter.enabled = False
 window.exit_button.visible = False
 window.fullscreen = True
-window.color = color.inverse(color.brown)
+window.color = color.rgb(0,181,226)
 
 def update():
 	global block_pick

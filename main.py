@@ -1,6 +1,7 @@
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 from perlin_noise import PerlinNoise
+from ursina.shaders import basic_lighting_shader
 import random
 import sys
 import keyboard
@@ -55,7 +56,8 @@ class Voxel(Button):
 			origin_y = 0.5,
 			texture = texture,
 			color = color.color(0,0,random.uniform(0.9,1)),
-			scale = 0.5
+			scale = 0.5,
+			shader=basic_lighting_shader
    			)
 
 	def input(self,key):
@@ -84,7 +86,7 @@ class Hand(Entity):
 			texture = arm,
 			scale = 0.2,
 			rotation = Vec3(150,-10,0),
-			position = Vec2(0.7,-0.6))
+			position = Vec2(0.9,-0.9))
 
 	def active(self):
 		self.position = Vec2(0.5,-0.5)
@@ -111,7 +113,9 @@ for z in range(-30,30):
 	    voxel = Voxel(position=(x,y,z))
 
 player = FirstPersonController()
+dl = PointLight(y = 50, color = color.red)
 player.gravity = 0.6
+DirectionalLight(parent=Voxel, y=2, z=3, shadows=True)
 player.cursor = Entity(parent=camera.ui, model='quad', color=color.light_gray, scale=.008, rotation_z=45)
 hand = Hand()
 inventory = Inventory()

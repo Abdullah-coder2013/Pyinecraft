@@ -4,7 +4,7 @@ from perlin_noise import PerlinNoise
 from ursina.shaders import basic_lighting_shader
 import random
 import sys
-import keyboard
+from numpy import floor
 
 app = Ursina()
 
@@ -19,13 +19,16 @@ cobble = load_texture("assets/cobbler.png")
 ob = load_texture("assets/obsidian.png")
 ice = load_texture("assets/ice.png")
 punch_sound   = Audio('assets/break.ogg',loop = False, autoplay = False)
+player_movement_sound = Audio('assets/move.mp3', loop = True, autoplay = False)
 bgm = Audio("assets/music.ogg", loop = True, autoplay = True)
 block_pick = 1
 
 window.fps_counter.enabled = False
 window.exit_button.visible = False
 window.fullscreen = True
+window.borderless = False
 window.color = color.rgb(0,181,226)
+window.show_ursina_splash = True
 
 def update():
 	global block_pick
@@ -34,6 +37,8 @@ def update():
 		hand.active()
 	else:
 		hand.passive()
+  
+		
 
 	if held_keys['1']: block_pick = 1
 	if held_keys['2']: block_pick = 2
@@ -111,12 +116,12 @@ for z in range(-30,30):
 	    y = noise([x * .02,z * .02])
 	    y = math.floor(y * 7.5)
 	    voxel = Voxel(position=(x,y,z))
-
 player = FirstPersonController()
-dl = PointLight(y = 50, color = color.red)
 player.gravity = 0.6
 DirectionalLight(parent=Voxel, y=2, z=3, shadows=True)
 player.cursor = Entity(parent=camera.ui, model='quad', color=color.light_gray, scale=.008, rotation_z=45)
+player.x = player.z = 5
+player.y = 12
 hand = Hand()
 inventory = Inventory()
 

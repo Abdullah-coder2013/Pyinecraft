@@ -18,108 +18,147 @@ arm = load_texture("assets/alt.png")
 cobble = load_texture("assets/cobbler.png")
 ob = load_texture("assets/obsidian.png")
 ice = load_texture("assets/ice.png")
-punch_sound   = Audio('assets/break.ogg',loop = False, autoplay = False)
-player_movement_sound = Audio('assets/move.mp3', loop = True, autoplay = False)
-bgm = Audio("assets/music.ogg", loop = True, autoplay = True)
+punch_sound = Audio('assets/break.ogg', loop=False, autoplay=False)
+player_movement_sound = Audio('assets/move.mp3', loop=True, autoplay=False)
+bgm = Audio("assets/music.ogg", loop=True, autoplay=True)
 block_pick = 1
 
 window.fps_counter.enabled = False
 window.exit_button.visible = False
 window.fullscreen = True
 window.borderless = False
-window.color = color.rgb(0,181,226)
+window.color = color.rgb(0, 181, 226)
 window.show_ursina_splash = True
 
+pos = random.randint(0, 30)
+
+
 def update():
-	global block_pick
+    global block_pick
 
-	if held_keys['left mouse'] or held_keys['right mouse']:
-		hand.active()
-	else:
-		hand.passive()
-  
-		
+    if held_keys['left mouse'] or held_keys['right mouse']:
+        hand.active()
+    else:
+        hand.passive()
 
-	if held_keys['1']: block_pick = 1
-	if held_keys['2']: block_pick = 2
-	if held_keys['3']: block_pick = 3
-	if held_keys['4']: block_pick = 4
-	if held_keys['5']: block_pick = 5
-	if held_keys['6']: block_pick = 6
-	if held_keys['7']: block_pick = 7
-	if held_keys['8']: block_pick = 8
-	if held_keys['9']: block_pick = 9
-	if held_keys['escape']: sys.exit()
+    if player.y < -6:
+        player.y = 15
+        player.x = pos
+        player.z = pos
+
+    if held_keys['1']:
+        block_pick = 1
+    if held_keys['2']:
+        block_pick = 2
+    if held_keys['3']:
+        block_pick = 3
+    if held_keys['4']:
+        block_pick = 4
+    if held_keys['5']:
+        block_pick = 5
+    if held_keys['6']:
+        block_pick = 6
+    if held_keys['7']:
+        block_pick = 7
+    if held_keys['8']:
+        block_pick = 8
+    if held_keys['9']:
+        block_pick = 9
+    if held_keys['escape']:
+        sys.exit()
 
 
 class Voxel(Button):
-	def __init__(self, position = (0,0,0), texture = grassblock):
-		super().__init__(
-			parent = scene,
-			position = position,
-			model = 'assets/block',
-			origin_y = 0.5,
-			texture = texture,
-			color = color.color(0,0,random.uniform(0.9,1)),
-			scale = 0.5,
-			shader=basic_lighting_shader
-   			)
+    def __init__(self, position=(0, 0, 0), texture=grassblock):
+        super().__init__(
+            parent=scene,
+            position=position,
+            model='assets/block',
+            origin_y=0.5,
+            texture=texture,
+            color=color.color(0, 0, random.uniform(0.9, 1)),
+            scale=0.5,
+            shader=basic_lighting_shader
+        )
 
-	def input(self,key):
-		if self.hovered:
-			if key == 'right mouse down':
-				punch_sound.play()
-				if block_pick == 1: voxel = Voxel(position = self.position + mouse.normal, texture = grassblock)
-				if block_pick == 2: voxel = Voxel(position = self.position + mouse.normal, texture = dirt)
-				if block_pick == 3: voxel = Voxel(position = self.position + mouse.normal, texture = stone)
-				if block_pick == 4: voxel = Voxel(position = self.position + mouse.normal, texture = cobble)
-				if block_pick == 5: voxel = Voxel(position = self.position + mouse.normal, texture = sand)
-				if block_pick == 6: voxel = Voxel(position = self.position + mouse.normal, texture = log)
-				if block_pick == 7: voxel = Voxel(position = self.position + mouse.normal, texture = planks)
-				if block_pick == 8: voxel = Voxel(position = self.position + mouse.normal, texture = ob)
-				if block_pick == 9: voxel = Voxel(position = self.position + mouse.normal, texture = ice)
+    def input(self, key):
+        if self.hovered:
+            if key == 'right mouse down':
+                punch_sound.play()
+                if block_pick == 1:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=grassblock)
+                if block_pick == 2:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=dirt)
+                if block_pick == 3:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=stone)
+                if block_pick == 4:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=cobble)
+                if block_pick == 5:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=sand)
+                if block_pick == 6:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=log)
+                if block_pick == 7:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=planks)
+                if block_pick == 8:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=ob)
+                if block_pick == 9:
+                    voxel = Voxel(position=self.position +
+                                  mouse.normal, texture=ice)
 
-			if key == 'left mouse down':
-				punch_sound.play()
-				destroy(self)
+            if key == 'left mouse down':
+                punch_sound.play()
+                destroy(self)
+
 
 class Hand(Entity):
-	def __init__(self):
-		super().__init__(
-			parent = camera.ui,
-			model = 'assets/arm',
-			texture = arm,
-			scale = 0.2,
-			rotation = Vec3(150,-10,0),
-			position = Vec2(0.9,-0.9))
+    def __init__(self):
+        super().__init__(
+            parent=camera.ui,
+            model='assets/arm',
+            texture=arm,
+            scale=0.2,
+            rotation=Vec3(150, -10, 0),
+            position=Vec2(0.9, -0.9))
 
-	def active(self):
-		self.position = Vec2(0.5,-0.5)
+    def active(self):
+        self.position = Vec2(0.5, -0.5)
 
-	def passive(self):
-		self.position = Vec2(0.7,-0.6)
-  
+    def passive(self):
+        self.position = Vec2(0.7, -0.6)
+
+
 class Inventory(Entity):
-	def __init__(self):
-		super().__init__(
-			parent = camera.ui,
-			model = 'quad',
-			scale = (0.8,0.10,0),
-			position =  Vec2(0, -0.4),
-			texture = 'assets/inventory.png'
-		)
+    def __init__(self):
+        super().__init__(
+            parent=camera.ui,
+            model='quad',
+            scale=(0.8, 0.10, 0),
+            position=Vec2(0, -0.4),
+            texture='assets/inventory.png'
+        )
 
-noise = PerlinNoise(octaves=3,seed=random.randint(1,1000000))
 
-for z in range(-30,30):
-	for x in range(-30,30):
-	    y = noise([x * .02,z * .02])
-	    y = math.floor(y * 7.5)
-	    voxel = Voxel(position=(x,y,z))
+noise = PerlinNoise(octaves=random.randint(
+    1, 5), seed=random.randint(1, 1000000))
+
+for z in range(-30, 30):
+    for x in range(-30, 30):
+        y = noise([x * .02, z * .02])
+        y = math.floor(y * 7.5)
+        voxel = Voxel(position=(x, y, z))
 player = FirstPersonController()
 player.gravity = 0.6
 DirectionalLight(parent=Voxel, y=2, z=3, shadows=True)
-player.cursor = Entity(parent=camera.ui, model='quad', color=color.light_gray, scale=.008, rotation_z=45)
+player.cursor = Entity(parent=camera.ui, model='quad',
+                       color=color.light_gray, scale=.008, rotation_z=45)
 player.x = player.z = 5
 player.y = 12
 hand = Hand()

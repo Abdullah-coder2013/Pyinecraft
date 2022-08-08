@@ -7,21 +7,23 @@ import sys
 from numpy import floor
 
 app = Ursina()
+player = FirstPersonController()
 
-dirt = load_texture("assets/dirtblock.png")
-sand = load_texture("assets/sand.png")
-stone = load_texture("assets/stone.png")
-grassblock = load_texture("assets/grassblock.png")
-log = load_texture("assets/log.png")
-planks = load_texture("assets/planks.png")
-arm = load_texture("assets/alt.png")
-cobble = load_texture("assets/cobbler.png")
-ob = load_texture("assets/obsidian.png")
-ice = load_texture("assets/ice.png")
+blocks = [
+    load_texture('asset/grassblock.png'),
+    load_texture("assets/grassblock.png"),
+    load_texture("assets/dirtblock.png"),
+    load_texture("assets/stone.png"),
+    load_texture("assets/cobbler.png"),
+    load_texture("assets/sand.png"),
+    load_texture("assets/log.png"),
+    load_texture("assets/planks.png"),
+    load_texture("assets/obsidian.png"),
+    load_texture("assets/ice.png")
+]
 punch_sound = Audio('assets/break.ogg', loop=False, autoplay=False)
 player_movement_sound = Audio('assets/move.mp3', loop=True, autoplay=False)
 bgm = Audio("assets/music.ogg", loop=True, autoplay=True)
-block_pick = 1
 
 window.fps_counter.enabled = False
 window.exit_button.visible = False
@@ -30,46 +32,43 @@ window.borderless = False
 window.color = color.rgb(0, 181, 226)
 window.show_ursina_splash = True
 
-pos = random.randint(0, 30)
+block_id = 1
+
+
+def input(key):
+    global block_id, hand
+    if key.isdigit():
+        block_id = int(key)
+        if block_id >= len(blocks):
+            block_id = len(blocks) - 1
+        hand.texture = blocks[block_id]
 
 
 def update():
     global block_pick
 
-    if held_keys['left mouse'] or held_keys['right mouse']:
+    if held_keys['left mouse down'] or held_keys['right mouse down']:
+        punch_sound.play()
         hand.active()
     else:
         hand.passive()
 
     if player.y < -6:
         player.y = 15
-        player.x = pos
-        player.z = pos
+        player.x = 0
+        player.z = 0
 
-    if held_keys['1']:
-        block_pick = 1
-    if held_keys['2']:
-        block_pick = 2
-    if held_keys['3']:
-        block_pick = 3
-    if held_keys['4']:
-        block_pick = 4
-    if held_keys['5']:
-        block_pick = 5
-    if held_keys['6']:
-        block_pick = 6
-    if held_keys['7']:
-        block_pick = 7
-    if held_keys['8']:
-        block_pick = 8
-    if held_keys['9']:
-        block_pick = 9
     if held_keys['escape']:
         sys.exit()
 
+    genTerr()
+
+    creeper.look_at(player, 'forward')
+    creeper.rotation.x = 0
+
 
 class Voxel(Button):
-    def __init__(self, position=(0, 0, 0), texture=grassblock):
+    def __init__(self, position=(0, 0, 0), texture='assets/grassblock.png'):
         super().__init__(
             parent=scene,
             position=position,
@@ -85,54 +84,47 @@ class Voxel(Button):
         if self.hovered:
             if key == 'right mouse down':
                 punch_sound.play()
-                if block_pick == 1:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=grassblock)
-                if block_pick == 2:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=dirt)
-                if block_pick == 3:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=stone)
-                if block_pick == 4:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=cobble)
-                if block_pick == 5:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=sand)
-                if block_pick == 6:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=log)
-                if block_pick == 7:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=planks)
-                if block_pick == 8:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=ob)
-                if block_pick == 9:
-                    voxel = Voxel(position=self.position +
-                                  mouse.normal, texture=ice)
-
+                Voxel(position=self.position + mouse.normal,
+                      texture=blocks[block_id])
             if key == 'left mouse down':
                 punch_sound.play()
                 destroy(self)
+
+
+class Creeper(Entity):
+    def __init__(self, position=(3, 1, 3), texture='assets/creeper.png'):
+        super().__init__(
+            parent=scene,
+            position=position,
+            model='assets/creeper.fbx',
+            origin_y=1,
+            texture=texture,
+            shader=basic_lighting_shader,
+            scale=0.08,
+            double_sided=True,
+            collider='mesh'
+        )
+
+
+#
 
 
 class Hand(Entity):
     def __init__(self):
         super().__init__(
             parent=camera.ui,
-            model='assets/arm',
-            texture=arm,
+            model='assets/block',
+            texture=blocks[block_id],
             scale=0.2,
-            rotation=Vec3(150, -10, 0),
-            position=Vec2(0.9, -0.9))
+            rotation=Vec3(-10, -10, 10),
+            position=Vec2(0.6, -0.6)
+        )
 
     def active(self):
-        self.position = Vec2(0.5, -0.5)
+        hand.position = Vec2(0.4, -0.5)
 
     def passive(self):
-        self.position = Vec2(0.7, -0.6)
+        hand.position = Vec2(0.6, -0.6)
 
 
 class Inventory(Entity):
@@ -146,22 +138,32 @@ class Inventory(Entity):
         )
 
 
-noise = PerlinNoise(octaves=random.randint(
-    1, 5), seed=random.randint(1, 1000000))
+noise = PerlinNoise(octaves=3, seed=123456)
 
-for z in range(-30, 30):
-    for x in range(-30, 30):
-        y = noise([x * .02, z * .02])
-        y = math.floor(y * 7.5)
-        voxel = Voxel(position=(x, y, z))
-player = FirstPersonController()
+freq = 24
+amp = 6
+shells = []
+terrainWidth = 30
+
+for i in range(terrainWidth*terrainWidth):
+    ent = Voxel(texture=blocks[1])
+    shells.append(ent)
+
+
+def genTerr():
+    for i in range(len(shells)):
+        x = shells[i].x = floor((i/terrainWidth)+player.x-0.5*terrainWidth)
+        z = shells[i].z = floor((i % terrainWidth)+player.z-0.5*terrainWidth)
+        y = shells[i].y = floor((noise([x/freq, z/freq]))*amp)
+
+
 player.gravity = 0.6
 DirectionalLight(parent=Voxel, y=2, z=3, shadows=True)
+player.jumping = True
 player.cursor = Entity(parent=camera.ui, model='quad',
                        color=color.light_gray, scale=.008, rotation_z=45)
-player.x = player.z = 5
-player.y = 12
-hand = Hand()
 inventory = Inventory()
+hand = Hand()
+creeper = Creeper()
 
 app.run()

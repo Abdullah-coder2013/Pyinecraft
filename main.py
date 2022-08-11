@@ -86,11 +86,6 @@ def crown(parent):
                               texture='assets/leaves.png')
                 voxel.parent = parent
 
-    for i in range(1):
-        for j in range(1):
-            voxel = Voxel(position=(j, 3, i), texture='assets/leaves.png')
-            voxel.parent = parent
-
 
 def plantTree(_x, _y, _z):
     tree = Entity(model=None,
@@ -203,7 +198,6 @@ class Inventory(Entity):
             parent=camera.ui,
             model='quad',
             scale=(0.8, 0.10, 0),
-            shader=basic_lighting_shader,
             position=Vec2(0, -0.4),
             texture='assets/inventory.png'
         )

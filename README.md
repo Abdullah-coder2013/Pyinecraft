@@ -21,5 +21,5 @@ Pyinecraft is a simple minecraft clone made with Python.
 
 ### Screenshots:
 
-<img src="site/iii.png" alt="iii"/>
+<img src="iii.png" alt="iii"/>
 

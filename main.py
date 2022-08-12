@@ -105,7 +105,7 @@ def checkTree(_x, _y, _z):
 
 def genTrees(_x, _z, plantTree=True):
     y = 1
-    freq = 16
+    freq = 5
     amp = 21
     y += ((noise([_x/freq, _z/freq]))*amp)
     if plantTree == True:

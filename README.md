@@ -2,12 +2,12 @@
 
 Pyinecraft is a simple minecraft clone made with Python.
 
-# Bugs
+## Bugs
 
 1. Sometimes you will be stuck (You cannot move or jump)
    You will need to break a block.
    
-# How To Play:
+## How To Play:
 
 1 = Grass <br>
 2 = Dirt <br>
@@ -18,3 +18,8 @@ Pyinecraft is a simple minecraft clone made with Python.
 7 = Planks <br>
 8 = Obsidian <br>
 9 = Ice <br>
+
+### Screenshots:
+
+<img src="site/iii.png" alt="iii"/>
+

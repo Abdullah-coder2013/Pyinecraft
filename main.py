@@ -29,10 +29,11 @@ player_movement_sound = Audio('assets/move.mp3', loop=True, autoplay=False)
 bgm = Audio("assets/music.ogg", loop=True, autoplay=True)
 window.fps_counter.enabled = True
 window.exit_button.visible = False
-window.fullscreen = True
+window.fullscreen = False
 window.borderless = False
 window.color = color.rgb(0, 181, 226)
 window.show_ursina_splash = True
+window.icon = "favicon.ico"
 window.title = 'PyineCraft'
 noise = PerlinNoise(octaves=2, seed=123456)
 block_id = 1
@@ -133,6 +134,9 @@ def update():
     genTrees(randrange(-500, 500), randrange(-200, 200))
     genTerr()
 
+    if Voxel.texture == blocks[5]:
+        Voxel.gravity = 3
+
 
 class Hand(Entity):
     def __init__(self):
@@ -186,11 +190,11 @@ def genTerr():
 
 def close():
     application.pause()
-    time.sleep(2)
+    time.sleep(1)
     sys.exit()
 
 
-player.gravity = 0.6
+player.gravity = 0.5
 DirectionalLight(parent=Voxel, y=2, z=3, shadows=True)
 player.jumping = True
 player.cursor = Entity(parent=camera.ui, model='quad',

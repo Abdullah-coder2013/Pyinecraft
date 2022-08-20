@@ -97,7 +97,7 @@ def checkTree(_x, _y, _z):
     freq = 3
     amp = 80
     treeChance = ((noise([_x / freq, _z / freq])) * amp)
-    if treeChance > 30:
+    if treeChance > 40:
         plantTree(_x, _y, _z)
 
 

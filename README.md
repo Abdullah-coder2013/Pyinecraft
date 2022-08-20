@@ -2,6 +2,8 @@
 
 Pyinecraft is a simple minecraft clone made with Python.
 
+<img src="iii.png" alt="iii"/>
+
 ## Bugs
 
 1. Sometimes you will be stuck (You cannot move or jump)
@@ -18,8 +20,3 @@ Pyinecraft is a simple minecraft clone made with Python.
 7 = Planks <br>
 8 = Obsidian <br>
 9 = Ice <br>
-
-### Screenshots:
-
-<img src="iii.png" alt="iii"/>
-

@@ -1,4 +1,4 @@
-# Pyinecraft 2.0
+# Pyinecraft
 
 Pyinecraft is a simple minecraft clone made with Python.
 
@@ -6,8 +6,7 @@ Pyinecraft is a simple minecraft clone made with Python.
 
 ## Bugs
 
-1. Sometimes you will be stuck (You cannot move or jump)
-   You will need to break a block.
+You cannot break the blocks in the ground because, if you even break a block the hole (where the block was) will follow you.
    
 ## How To Play:
 

@@ -3,6 +3,7 @@ from ursina.prefabs.first_person_controller import FirstPersonController
 from perlin_noise import PerlinNoise
 from ursina.shaders import *
 import random
+import json
 import sys
 import time
 from numpy import floor
@@ -27,7 +28,8 @@ blocks = [
 punch_sound = Audio('assets/break.ogg', loop=False, autoplay=False)
 player_movement_sound = Audio('assets/move.mp3', loop=True, autoplay=False)
 bgm = Audio("assets/music.ogg", loop=True, autoplay=True)
-window.fps_counter.enabled = True
+
+
 window.exit_button.visible = False
 window.fullscreen = False
 window.borderless = False
@@ -35,9 +37,25 @@ window.color = color.rgb(0, 181, 226)
 window.show_ursina_splash = True
 window.icon = "favicon.ico"
 window.title = 'PyineCraft'
-noise = PerlinNoise(octaves=2, seed=123456)
+noise = PerlinNoise(octaves=random.randint(
+    1, 3), seed=random.randint(1, 1000000))
 block_id = 1
 pcs = 0
+
+
+with open('configurations.json') as json_file:
+    data = json.load(json_file)
+    render_fog = data["scene"][0]["render_fog"]
+    enable_shaders = data["scene"][0]["enable_shaders"]
+    window.borderless = data["window"][0]["borderless"]
+    window.fullscreen = data["window"][0]["fullscreen"]
+    window.vsync = data["window"][0]["vsync"]
+    nickname = data["scene"][0]["nickname"]
+    fps = data["window"][0]["fpsc"]
+
+
+if fps == True:
+    window.fps_counter.enabled = True
 
 
 class Voxel(Button):
@@ -62,6 +80,27 @@ class Voxel(Button):
             if key == 'left mouse down':
                 punch_sound.play()
                 destroy(self)
+
+
+class Terrvoxel(Button):
+    def __init__(self, position=(0, 0, 0), texture='assets/grassblock.png'):
+        super().__init__(
+            parent=scene,
+            position=position,
+            model='assets/block',
+            origin_y=0.5,
+            texture=texture,
+            color=color.color(0, 0, random.uniform(0.9, 1)),
+            scale=0.5,
+            shader=lit_with_shadows_shader
+        )
+
+    def input(self, key):
+        if self.hovered:
+            if key == 'right mouse down':
+                punch_sound.play()
+                Voxel(position=self.position + mouse.normal,
+                      texture=blocks[block_id])
 
 
 def input(key):
@@ -98,7 +137,7 @@ def checkTree(_x, _y, _z):
     freq = 3
     amp = 80
     treeChance = ((noise([_x / freq, _z / freq])) * amp)
-    if treeChance > 40:
+    if treeChance > 38:
         plantTree(_x, _y, _z)
 
 
@@ -125,17 +164,23 @@ def update():
         player.speed = 10
 
     if held_keys['escape']:
-        close()
-    if player.y < -6:
+        sys.exit()
+
+    if player.y < -110:
         player.y = 15
         player.x = 0
         player.z = 0
 
-    genTrees(randrange(-500, 500), randrange(-200, 200))
+    genTrees(randrange(-500, 500), randrange(-1000, 1000))
     genTerr()
 
     if Voxel.texture == blocks[5]:
         Voxel.gravity = 3
+
+    if enable_shaders == True:
+        Entity.default_shader = lit_with_shadows_shader
+        sun = DirectionalLight()
+        sun.look_at(Vec3(1, -1, -1))
 
 
 class Hand(Entity):
@@ -175,7 +220,7 @@ shells = []
 terrainWidth = 20
 
 for i in range(terrainWidth * terrainWidth):
-    ent = Voxel(texture=blocks[1])
+    ent = Terrvoxel(texture=blocks[1])
     shells.append(ent)
 
 

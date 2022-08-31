@@ -1,0 +1,17 @@
+{
+    "window": [
+        {
+            "fullscreen": false,
+            "borderless": false,
+            "vsync": false,
+            "fpsc": true
+        }
+    ],
+    "scene": [
+        {
+            "render_fog": false,
+            "enable_shaders": false,
+            "nickname": "Player_1"
+        }
+    ]
+}

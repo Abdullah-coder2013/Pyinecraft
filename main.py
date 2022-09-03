@@ -31,14 +31,13 @@ bgm = Audio("assets/music.ogg", loop=True, autoplay=True)
 
 
 window.exit_button.visible = False
-window.fullscreen = False
+window.fullscreen = True
 window.borderless = False
 window.color = color.rgb(0, 181, 226)
 window.show_ursina_splash = True
 window.icon = "favicon.ico"
 window.title = 'PyineCraft'
-noise = PerlinNoise(octaves=random.randint(
-    1, 3), seed=random.randint(1, 1000000))
+noise = PerlinNoise(octaves=3, seed=random.randint(1, 1000000))
 block_id = 1
 pcs = 0
 
@@ -143,7 +142,7 @@ def checkTree(_x, _y, _z):
 
 def genTrees(_x, _z, plant_tree=True):
     y = 1
-    freq = 5
+    freq = 7
     amp = 21
     y += ((noise([_x / freq, _z / freq])) * amp)
     if plant_tree:
@@ -190,6 +189,7 @@ class Hand(Entity):
             model='assets/block',
             texture=blocks[block_id],
             scale=0.2,
+            shader=lit_with_shadows_shader,
             rotation=Vec3(-10, -10, 10),
             position=Vec2(0.6, -0.6)
         )
@@ -216,8 +216,8 @@ class Inventory(Entity):
 
 freq = 24
 amp = 6
-shells = []
 terrainWidth = 20
+shells = []
 
 for i in range(terrainWidth * terrainWidth):
     ent = Terrvoxel(texture=blocks[1])
@@ -231,12 +231,6 @@ def genTerr():
         z = shells[i].z = floor((i % terrainWidth) +
                                 player.z - 0.5 * terrainWidth)
         y = shells[i].y = floor((noise([x / freq, z / freq])) * amp)
-
-
-def close():
-    application.pause()
-    time.sleep(1)
-    sys.exit()
 
 
 player.gravity = 0.5

@@ -236,6 +236,7 @@ def genTerr():
 player.gravity = 0.5
 DirectionalLight(parent=Voxel, y=2, z=3, shadows=True)
 player.jumping = True
+player.height = 0.65
 player.cursor = Entity(parent=camera.ui, model='quad',
                        color=color.light_gray, scale=.008, rotation_z=45)
 inventory = Inventory()

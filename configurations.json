@@ -11,7 +11,8 @@
         {
             "render_fog": false,
             "enable_shaders": false,
-            "nickname": "Player_1"
+            "nickname": "Player_1",
+            "terrainGeneration": "normal"
         }
     ]
 }

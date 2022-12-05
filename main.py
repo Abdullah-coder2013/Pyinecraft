@@ -1,7 +1,7 @@
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 from perlin_noise import PerlinNoise
-from ursina.shaders import *
+from ursina.shaders import basic_lighting_shader
 import random
 import json
 import sys
@@ -51,6 +51,7 @@ with open('configurations.json') as json_file:
     window.vsync = data["window"][0]["vsync"]
     nickname = data["scene"][0]["nickname"]
     fps = data["window"][0]["fpsc"]
+    terrainGeneration = data["scene"][0]["terrainGeneration"]
 
 
 if fps == True:
@@ -67,7 +68,7 @@ class Voxel(Button):
             texture=texture,
             color=color.color(0, 0, random.uniform(0.9, 1)),
             scale=0.5,
-            shader=lit_with_shadows_shader
+            shader=basic_lighting_shader
         )
 
     def input(self, key):
@@ -79,7 +80,7 @@ class Voxel(Button):
             if key == 'left mouse down':
                 punch_sound.play()
                 destroy(self)
-
+                
 
 class Terrvoxel(Button):
     def __init__(self, position=(0, 0, 0), texture='assets/grassblock.png'):
@@ -91,7 +92,7 @@ class Terrvoxel(Button):
             texture=texture,
             color=color.color(0, 0, random.uniform(0.9, 1)),
             scale=0.5,
-            shader=lit_with_shadows_shader
+            shader=basic_lighting_shader
         )
 
     def input(self, key):
@@ -169,15 +170,17 @@ def update():
         player.y = 15
         player.x = 0
         player.z = 0
-
-    genTrees(randrange(-500, 500), randrange(-1000, 1000))
-    genTerr()
+        
+    if terrainGeneration == "infinite":
+        genTrees(randrange(-500, 500), randrange(-1000, 1000))
+    elif terrainGeneration == "normal":
+        genTrees(randrange(-20, 20), randrange(-10, 20))
 
     if Voxel.texture == blocks[5]:
         Voxel.gravity = 3
 
     if enable_shaders == True:
-        Entity.default_shader = lit_with_shadows_shader
+        Entity.default_shader = basic_lighting_shader
         sun = DirectionalLight()
         sun.look_at(Vec3(1, -1, -1))
 
@@ -189,7 +192,7 @@ class Hand(Entity):
             model='assets/block',
             texture=blocks[block_id],
             scale=0.2,
-            shader=lit_with_shadows_shader,
+            shader=basic_lighting_shader,
             rotation=Vec3(-10, -10, 10),
             position=Vec2(0.6, -0.6)
         )
@@ -219,10 +222,6 @@ amp = 6
 terrainWidth = 20
 shells = []
 
-for i in range(terrainWidth * terrainWidth):
-    ent = Terrvoxel(texture=blocks[1])
-    shells.append(ent)
-
 
 def genTerr():
     for i in range(len(shells)):
@@ -231,6 +230,20 @@ def genTerr():
         z = shells[i].z = floor((i % terrainWidth) +
                                 player.z - 0.5 * terrainWidth)
         y = shells[i].y = floor((noise([x / freq, z / freq])) * amp)
+
+if terrainGeneration == "normal":
+    for z in range(-20, 20):
+        for x in range(-10, 20):
+            y = noise([x * .02, z * .02])
+            y = math.floor(y * 7.5)
+            voxel = Voxel(position=(x, y, z))
+elif terrainGeneration == "infinite":
+    for i in range(terrainWidth * terrainWidth):
+        ent = Terrvoxel(texture=blocks[1])
+        shells.append(ent)
+
+
+    genTerr()
 
 
 player.gravity = 0.5

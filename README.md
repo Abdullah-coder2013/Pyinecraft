@@ -6,7 +6,8 @@ Pyinecraft is a simple minecraft clone made with Python.
 
 ## Bugs
 
-You cannot break the blocks in the ground because, if you even break a block the hole (where the block was) will follow you.
+1. You cannot break the blocks on the ground in infinite mode, because the hole of the block will "follow" you.
+2. Infinite mode is quite not finished yet. It is unstable.
    
 ## How To Play:
 

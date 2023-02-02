@@ -165,6 +165,8 @@ def update():
 
     if held_keys['escape']:
         sys.exit()
+    if held_keys["t"]:
+        plantTree(round(player.x), round(player.y), round(player.z))
 
     if player.y < -110:
         player.y = 15

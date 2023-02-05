@@ -235,7 +235,7 @@ def genTerr():
 
 if terrainGeneration == "normal":
     for z in range(-20, 20):
-        for x in range(-10, 20):
+        for x in range(-20, 20):
             y = noise([x * .02, z * .02])
             y = math.floor(y * 7.5)
             voxel = Voxel(position=(x, y, z))
